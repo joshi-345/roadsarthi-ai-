@@ -1,0 +1,4 @@
+[server]
+# Match the application-level photo size limit (5 MB).
+# Streamlit enforces this before our code sees the file.
+maxUploadSize = 5
