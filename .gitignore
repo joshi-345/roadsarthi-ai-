@@ -34,6 +34,7 @@ Desktop.ini
 
 # Data and uploads (added as features are built)
 *.db
+*.db.pre_phase2*.bak
 uploads/
 logs/
 

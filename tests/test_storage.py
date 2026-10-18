@@ -76,6 +76,23 @@ class TestInitDb:
         """Calling init_db twice does not raise."""
         init_db(db_path=db_path)  # second call
 
+    def test_legacy_upgrade_is_additive_and_backed_up(self, tmp_path):
+        path = str(tmp_path / "legacy.db")
+        conn = sqlite3.connect(path)
+        conn.execute("CREATE TABLE reports (id INTEGER PRIMARY KEY, category TEXT NOT NULL, description TEXT NOT NULL, photo_filename TEXT, location_consent INTEGER NOT NULL DEFAULT 0, location_description TEXT, latitude REAL, longitude REAL, status TEXT NOT NULL DEFAULT 'unverified', created_at TEXT NOT NULL)")
+        conn.execute("INSERT INTO reports (category, description, created_at) VALUES ('Pothole', 'Legacy text', 'now')")
+        conn.commit()
+        conn.close()
+        init_db(db_path=path)
+        init_db(db_path=path)
+        conn = sqlite3.connect(path)
+        names = {row[1] for row in conn.execute("PRAGMA table_info(reports)")}
+        row = conn.execute("SELECT description, original_text, summary, assistant_used, ai_model FROM reports").fetchone()
+        conn.close()
+        assert {"original_text", "summary", "assistant_used", "ai_model"} <= names
+        assert row == ("Legacy text", "Legacy text", None, None, None)
+        assert os.path.exists(path + ".pre_phase2.bak")
+
 
 # ── save_report ─────────────────────────────────────────────────────────────
 
@@ -105,6 +122,17 @@ class TestSaveReport:
         assert row[2] is None  # no photo
         assert row[3] == "unverified"
         assert row[4]  # created_at is not empty
+
+    def test_description_is_saved_exactly_and_assistance_fields_persist(self, db_path, upload_dir):
+        text = "  A pothole is near the bus stop.  "
+        report_id = save_report(
+            category="Pothole", description=text, summary="A pothole by a bus stop.",
+            assistant_used=True, ai_model="qwen3:4b", db_path=db_path, upload_dir=upload_dir,
+        )
+        conn = sqlite3.connect(db_path)
+        row = conn.execute("SELECT description, original_text, summary, assistant_used, ai_model FROM reports WHERE id=?", (report_id,)).fetchone()
+        conn.close()
+        assert row == (text, text, "A pothole by a bus stop.", 1, "qwen3:4b")
 
     def test_report_with_photo(self, db_path, upload_dir):
         photo_data = _make_image_bytes()

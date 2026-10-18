@@ -1,0 +1,51 @@
+language,complaint,expected_category
+Gurmukhi Punjabi,ਸੜਕ ਤੇ ਖੱਡਾ ਹੈ,Pothole
+Gurmukhi Punjabi,ਮੋੜ ਤੇ ਖੱਡੇ ਹਨ,Pothole
+Gurmukhi Punjabi,ਪੁਲ ਦੀ ਰੇਲਿੰਗ ਟੁੱਟ ਗਈ,Broken Guardrail
+Gurmukhi Punjabi,ਸੜਕ ਦਾ ਸਾਈਨ ਗਾਇਬ ਹੈ,Missing / Damaged Sign
+Gurmukhi Punjabi,ਅੰਡਰਪਾਸ ਵਿੱਚ ਪਾਣੀ ਭਰ ਗਿਆ,Waterlogging / Flooding
+Gurmukhi Punjabi,ਰਾਹ ਵਿੱਚ ਮਲਬਾ ਪਿਆ ਹੈ,Road Debris
+Gurmukhi Punjabi,ਟਾਹਣੀ ਸੜਕ ਤੇ ਡਿੱਗੀ ਹੈ,Road Debris
+Gurmukhi Punjabi,ਬਿਨਾਂ ਨਿਸ਼ਾਨ ਸਪੀਡ ਬ੍ਰੇਕਰ ਹੈ,Unmarked Speed Bump
+Gurmukhi Punjabi,ਸੜਕ ਦੀ ਸਤਹ ਟੁੱਟੀ ਹੈ,Damaged Road Surface
+Gurmukhi Punjabi,ਹੋਰ ਸਮੱਸਿਆ ਸੜਕ ਤੇ ਹੈ,Other
+Devanagari Hindi,सड़क पर गड्ढा है,Pothole
+Devanagari Hindi,मोड़ पर गड्ढे हैं,Pothole
+Devanagari Hindi,पुल की रेलिंग टूटी है,Broken Guardrail
+Devanagari Hindi,सड़क का साइन गायब है,Missing / Damaged Sign
+Devanagari Hindi,अंडरपास में पानी भर गया,Waterlogging / Flooding
+Devanagari Hindi,रास्ते पर मलबा पड़ा है,Road Debris
+Devanagari Hindi,टहनी सड़क पर गिरी है,Road Debris
+Devanagari Hindi,बिना निशान का स्पीड ब्रेकर है,Unmarked Speed Bump
+Devanagari Hindi,सड़क की सतह उखड़ी है,Damaged Road Surface
+Devanagari Hindi,सड़क पर अन्य समस्या है,Other
+Roman Punjabi,sadak te khadda hai,Pothole
+Roman Punjabi,mod te khadde han,Pothole
+Roman Punjabi,pul di railing tut gayi,Broken Guardrail
+Roman Punjabi,sadak da sign gayab hai,Missing / Damaged Sign
+Roman Punjabi,underpass vich paani bhar gaya,Waterlogging / Flooding
+Roman Punjabi,raah vich malba paya hai,Road Debris
+Roman Punjabi,tahni sadak te diggi hai,Road Debris
+Roman Punjabi,bina nishan speed breaker hai,Unmarked Speed Bump
+Roman Punjabi,sadak di satah tut gayi,Damaged Road Surface
+Roman Punjabi,hor samasya sadak te hai,Other
+Roman Hindi,sadak par gaddha hai,Pothole
+Roman Hindi,mod par gadde hain,Pothole
+Roman Hindi,pul ki railing toot gayi,Broken Guardrail
+Roman Hindi,sadak ka sign gayab hai,Missing / Damaged Sign
+Roman Hindi,underpass mein paani bhar gaya,Waterlogging / Flooding
+Roman Hindi,raaste par malba pada hai,Road Debris
+Roman Hindi,tahni sadak par giri hai,Road Debris
+Roman Hindi,bina nishan speed breaker hai,Unmarked Speed Bump
+Roman Hindi,sadak ki satah ukhad gayi,Damaged Road Surface
+Roman Hindi,anya samasya sadak par hai,Other
+English,There is a pothole on the road,Pothole
+English,Two potholes are near the turn,Pothole
+English,The bridge guardrail is broken,Broken Guardrail
+English,The road sign is missing,Missing / Damaged Sign
+English,Water fills the underpass,Waterlogging / Flooding
+English,Debris is on the road,Road Debris
+English,A fallen branch blocks the shoulder,Road Debris
+English,An unmarked speed bump is ahead,Unmarked Speed Bump
+English,The road surface is cracked,Damaged Road Surface
+English,Other road hazard reported,Other

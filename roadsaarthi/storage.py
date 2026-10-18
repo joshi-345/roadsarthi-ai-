@@ -24,8 +24,9 @@ from roadsaarthi import config
 
 
 def init_db(db_path: str | None = None) -> None:
-    """Create the ``reports`` table if it does not already exist."""
+    """Create/upgrade reports; back up an existing DB before first upgrade."""
     db_path = db_path or config.DB_PATH
+    existed = os.path.isfile(db_path) and os.path.getsize(db_path) > 0
     conn = sqlite3.connect(db_path)
     try:
         conn.execute(
@@ -43,6 +44,30 @@ def init_db(db_path: str | None = None) -> None:
                 created_at          TEXT    NOT NULL
             )
             """
+        )
+        columns = {row[1] for row in conn.execute("PRAGMA table_info(reports)")}
+        additions = {
+            "original_text": "TEXT",
+            "summary": "TEXT",
+            "assistant_used": "INTEGER",
+            "ai_model": "TEXT",
+        }
+        missing = {name: kind for name, kind in additions.items() if name not in columns}
+        if missing and existed:
+            backup_path = f"{db_path}.pre_phase2.bak"
+            if os.path.exists(backup_path):
+                import time
+                backup_path = f"{db_path}.pre_phase2.{time.time_ns()}.bak"
+            backup = sqlite3.connect(backup_path)
+            try:
+                conn.backup(backup)
+            finally:
+                backup.close()
+        for name, kind in missing.items():
+            conn.execute(f"ALTER TABLE reports ADD COLUMN {name} {kind}")
+        conn.execute(
+            "UPDATE reports SET original_text = description "
+            "WHERE original_text IS NULL"
         )
         conn.commit()
     finally:
@@ -121,6 +146,9 @@ def save_report(
     longitude: float | None = None,
     db_path: str | None = None,
     upload_dir: str | None = None,
+    summary: str | None = None,
+    assistant_used: bool = False,
+    ai_model: str | None = None,
 ) -> int:
     """Persist a validated hazard report and return its integer ID.
 
@@ -153,12 +181,12 @@ def save_report(
             INSERT INTO reports (
                 category, description, photo_filename,
                 location_consent, location_description, latitude, longitude,
-                status, created_at
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                status, created_at, original_text, summary, assistant_used, ai_model
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
             (
                 category,
-                description.strip(),
+                description,
                 photo_filename,
                 1 if location_consent else 0,
                 location_description,
@@ -166,6 +194,10 @@ def save_report(
                 longitude,
                 "unverified",
                 created_at,
+                description,
+                summary,
+                1 if assistant_used else 0,
+                ai_model,
             ),
         )
         conn.commit()

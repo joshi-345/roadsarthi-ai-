@@ -44,6 +44,23 @@ MAX_PHOTO_DIMENSION: int = 8192  # max width or height in pixels
 SAVED_PHOTO_MAX_DIMENSION: int = 2048  # max width or height after saving
 
 # ---------------------------------------------------------------------------
+# Optional local complaint assistance
+# ---------------------------------------------------------------------------
+ASSISTANCE_ENABLED: bool = True
+ASSISTANCE_INPUT_LIMIT: int = 800
+ASSISTANCE_TIMEOUT_SECONDS: int = 30
+ASSISTANCE_RATE_LIMIT_SECONDS: int = 20
+ASSISTANCE_MODEL: str = "qwen3:4b"
+ASSISTANCE_BASE_URL: str = "http://127.0.0.1:11434"
+ASSISTANCE_FORM_VERSION: int = 2
+ROMAN_LANGUAGES: tuple[str, ...] = ("Roman Punjabi", "Roman Hindi", "English")
+SUPPORTED_LANGUAGES: tuple[str, ...] = (
+    "Gurmukhi Punjabi",
+    "Devanagari Hindi",
+    *ROMAN_LANGUAGES,
+)
+
+# ---------------------------------------------------------------------------
 # Location limits
 # ---------------------------------------------------------------------------
 MAX_LOCATION_DESCRIPTION_LENGTH: int = 200
