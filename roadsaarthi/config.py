@@ -39,7 +39,9 @@ MAX_PHOTO_SIZE_BYTES: int = MAX_PHOTO_SIZE_MB * 1024 * 1024
 ALLOWED_PHOTO_EXTENSIONS: set[str] = {".jpg", ".jpeg", ".png"}
 ALLOWED_PHOTO_TYPES: set[str] = {"image/jpeg", "image/png"}
 ALLOWED_PHOTO_FORMATS: set[str] = {"JPEG", "PNG"}  # Pillow's Image.format values
+MAX_PHOTO_PIXELS: int = 25_000_000
 MAX_PHOTO_DIMENSION: int = 8192  # max width or height in pixels
+SAVED_PHOTO_MAX_DIMENSION: int = 2048  # max width or height after saving
 
 # ---------------------------------------------------------------------------
 # Location limits

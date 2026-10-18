@@ -91,10 +91,15 @@ def validate_photo(
     if file_type not in config.ALLOWED_PHOTO_TYPES:
         return False, "Only JPEG and PNG photos are accepted."
 
-    if width > config.MAX_PHOTO_DIMENSION or height > config.MAX_PHOTO_DIMENSION:
+    if (
+        width * height > config.MAX_PHOTO_PIXELS
+        or width > config.MAX_PHOTO_DIMENSION
+        or height > config.MAX_PHOTO_DIMENSION
+    ):
         return False, (
-            f"Image dimensions must not exceed "
-            f"{config.MAX_PHOTO_DIMENSION}\u00d7{config.MAX_PHOTO_DIMENSION} pixels."
+            "Please use a smaller photo. Image dimensions must not exceed "
+            f"{config.MAX_PHOTO_PIXELS:,} pixels total or "
+            f"{config.MAX_PHOTO_DIMENSION}\u00d7{config.MAX_PHOTO_DIMENSION} pixels per side."
         )
 
     return True, ""

@@ -215,6 +215,22 @@ class TestExifStripping:
             assert saved_img.size == (20, 40)
 
 
+class TestSavedPhotoResizing:
+    def test_large_photo_is_downscaled_to_2048_longest_side(self, tmp_path):
+        data = _make_image_bytes(width=4000, height=3000)
+        filename = _save_photo(data, ".jpg", upload_dir=str(tmp_path))
+
+        with Image.open(tmp_path / filename) as saved_img:
+            assert saved_img.size == (2048, 1536)
+
+    def test_small_photo_is_not_enlarged(self, tmp_path):
+        data = _make_image_bytes(width=100, height=80)
+        filename = _save_photo(data, ".jpg", upload_dir=str(tmp_path))
+
+        with Image.open(tmp_path / filename) as saved_img:
+            assert saved_img.size == (100, 80)
+
+
 # ── UUID filename ───────────────────────────────────────────────────────────
 
 

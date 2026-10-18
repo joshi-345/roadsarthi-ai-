@@ -131,6 +131,15 @@ class TestValidatePhoto:
         assert not ok
         assert "dimensions" in msg.lower()
 
+    def test_excessive_total_pixel_count_rejected(self):
+        data = _make_image_bytes(
+            width=5001, height=5000, fmt="PNG", mode="RGB"
+        )
+        ok, msg = validate_photo("large.png", "image/png", len(data), data)
+        assert not ok
+        assert "smaller photo" in msg.lower()
+        assert f"{config.MAX_PHOTO_PIXELS:,}" in msg
+
     def test_webp_renamed_to_jpg_rejected(self):
         """A real WebP file renamed to .jpg must be rejected.
 

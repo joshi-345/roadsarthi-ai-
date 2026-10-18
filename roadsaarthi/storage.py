@@ -86,6 +86,10 @@ def _save_photo(
 
     buf = io.BytesIO(photo_data)
     img = ImageOps.exif_transpose(Image.open(buf))
+    img.thumbnail(
+        (config.SAVED_PHOTO_MAX_DIMENSION, config.SAVED_PHOTO_MAX_DIMENSION),
+        Image.Resampling.LANCZOS,
+    )
 
     # Convert colour mode if needed (JPEG does not support alpha).
     if fmt == "JPEG" and img.mode not in ("RGB", "L"):
