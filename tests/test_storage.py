@@ -202,6 +202,18 @@ class TestExifStripping:
         exif = saved_img.getexif()
         assert not exif, f"EXIF data should be empty but got: {dict(exif)}"
 
+    def test_saved_photo_applies_exif_orientation(self, tmp_path):
+        img = Image.new("RGB", (40, 20), color="green")
+        exif = img.getexif()
+        exif[274] = 6  # Rotate 90 degrees clockwise.
+        buf = io.BytesIO()
+        img.save(buf, format="JPEG", exif=exif.tobytes())
+
+        filename = _save_photo(buf.getvalue(), ".jpg", upload_dir=str(tmp_path))
+
+        with Image.open(tmp_path / filename) as saved_img:
+            assert saved_img.size == (20, 40)
+
 
 # ── UUID filename ───────────────────────────────────────────────────────────
 

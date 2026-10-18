@@ -21,15 +21,24 @@ def main() -> None:
         layout="centered",
     )
 
+    st.session_state.setdefault("report_form_version", 0)
+    st.session_state.setdefault("last_submitted_report_id", None)
+    form_version = st.session_state.report_form_version
+
     # Ensure the database table exists on every run.
     init_db()
 
     # ── Header ──────────────────────────────────────────────────────────
     st.title("\U0001f6a7 RoadSaarthi AI")
     st.subheader("Report a Road Hazard")
+    if st.session_state.last_submitted_report_id is not None:
+        st.success(
+            f"\u2705 Report submitted successfully!\n\n"
+            f"**Report ID:** {st.session_state.last_submitted_report_id}\n\n"
+            f"**Status:** Unverified \u2014 a review is pending."
+        )
     st.markdown(
-        "Help make roads safer. Describe the hazard you\u2019ve spotted "
-        "and we\u2019ll route it to the right authority."
+        "Describe the hazard you've spotted. Your report is saved for review."
     )
     st.divider()
 
@@ -39,6 +48,7 @@ def main() -> None:
         options=[""] + list(config.HAZARD_CATEGORIES),
         index=0,
         help="Select the type of road hazard.",
+        key=f"category_{form_version}",
     )
 
     # ── Description ─────────────────────────────────────────────────────
@@ -55,6 +65,7 @@ def main() -> None:
             "e.g. Large pothole in the middle of the left lane, "
             "about 1 foot deep. Vehicles are swerving to avoid it."
         ),
+        key=f"description_{form_version}",
     )
 
     # ── Photo (optional) ────────────────────────────────────────────────
@@ -64,6 +75,7 @@ def main() -> None:
         type=["jpg", "jpeg", "png"],
         help=f"JPEG or PNG, max {config.MAX_PHOTO_SIZE_MB} MB.",
         label_visibility="collapsed",
+        key=f"photo_{form_version}",
     )
 
     # ── Location (optional, behind consent gate) ────────────────────────
@@ -71,6 +83,7 @@ def main() -> None:
     location_consent = st.checkbox(
         "I want to share the location of this hazard (optional)",
         value=False,
+        key=f"location_consent_{form_version}",
     )
 
     location_description = None
@@ -90,6 +103,7 @@ def main() -> None:
             max_chars=config.MAX_LOCATION_DESCRIPTION_LENGTH,
             placeholder='e.g. "Near Bus Stand, Jalandhar"',
             help="A short description of where the hazard is.",
+            key=f"location_description_{form_version}",
         )
 
         col1, col2 = st.columns(2)
@@ -101,6 +115,7 @@ def main() -> None:
                     "You can get coordinates by right-clicking "
                     "on Google Maps."
                 ),
+                key=f"latitude_{form_version}",
             )
         with col2:
             lon_input = st.text_input(
@@ -110,6 +125,7 @@ def main() -> None:
                     "You can get coordinates by right-clicking "
                     "on Google Maps."
                 ),
+                key=f"longitude_{form_version}",
             )
 
         # Parse lat/lon text to float
@@ -193,11 +209,9 @@ def main() -> None:
                     latitude=latitude,
                     longitude=longitude,
                 )
-                st.success(
-                    f"\u2705 Report submitted successfully!\n\n"
-                    f"**Report ID:** {report_id}\n\n"
-                    f"**Status:** Unverified \u2014 a review is pending."
-                )
+                st.session_state.last_submitted_report_id = report_id
+                st.session_state.report_form_version += 1
+                st.rerun()
             except Exception:
                 st.error(
                     "Something went wrong while saving your report. "

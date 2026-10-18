@@ -15,7 +15,7 @@ import sqlite3
 import uuid
 from datetime import datetime, timezone
 
-from PIL import Image
+from PIL import Image, ImageOps
 
 from roadsaarthi import config
 
@@ -85,7 +85,7 @@ def _save_photo(
         out_ext = ".png"
 
     buf = io.BytesIO(photo_data)
-    img = Image.open(buf)
+    img = ImageOps.exif_transpose(Image.open(buf))
 
     # Convert colour mode if needed (JPEG does not support alpha).
     if fmt == "JPEG" and img.mode not in ("RGB", "L"):
