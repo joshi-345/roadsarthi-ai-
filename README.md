@@ -33,6 +33,10 @@ streamlit run app.py
 
 The app opens in your browser at `http://localhost:8501`.
 
+Browser geolocation works only on HTTPS or on localhost. A phone demo opened
+over a plain local network IP address will not be able to request its location;
+use manual coordinate entry in that setup.
+
 ## Run the tests
 
 ```powershell
@@ -50,10 +54,12 @@ roadsaarthi ai/
 │   ├── __init__.py
 │   ├── config.py             # Constants (categories, limits, paths)
 │   ├── validation.py         # Pure input-validation functions
+│   ├── geolocation.py        # Browser geolocation component and reading parser
 │   └── storage.py            # SQLite + photo persistence
 ├── tests/
 │   ├── __init__.py
 │   ├── test_validation.py    # Validation unit tests
+│   ├── test_geolocation.py   # Geolocation reading parser tests
 │   └── test_storage.py       # Storage unit tests
 ├── requirements.txt          # Pinned dependencies
 ├── README.md                 # This file

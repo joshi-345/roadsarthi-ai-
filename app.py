@@ -5,6 +5,7 @@ import os
 import streamlit as st
 
 from roadsaarthi import config
+from roadsaarthi.geolocation import ERROR_MESSAGES, location_button, reading_to_fields
 from roadsaarthi.storage import init_db, save_report
 from roadsaarthi.validation import (
     validate_category,
@@ -98,6 +99,45 @@ def main() -> None:
             "to help authorities find the hazard. It will not be "
             "shared publicly."
         )
+
+        # Apply a one-time component trigger before creating its widgets.
+        # Streamlit permits setting widget state before that widget is
+        # instantiated in the current run.
+        accuracy_key = f"location_accuracy_{form_version}"
+        accuracy = st.session_state.get(accuracy_key)
+        component_v2 = getattr(
+            getattr(getattr(st, "components", None), "v2", None),
+            "component",
+            None,
+        )
+        if component_v2 is None:
+            st.caption("Location button unavailable; manual entry is used.")
+        else:
+            reading_result = location_button(key=f"location_button_{form_version}")
+            raw_reading = getattr(reading_result, "reading", None)
+            if raw_reading is not None:
+                fields_or_error = reading_to_fields(raw_reading)
+                if isinstance(fields_or_error, str):
+                    st.warning(ERROR_MESSAGES[fields_or_error])
+                else:
+                    st.session_state[f"latitude_{form_version}"] = fields_or_error[
+                        "latitude"
+                    ]
+                    st.session_state[f"longitude_{form_version}"] = fields_or_error[
+                        "longitude"
+                    ]
+                    accuracy = fields_or_error["accuracy"]
+                    if accuracy is not None:
+                        st.session_state[accuracy_key] = accuracy
+                    else:
+                        st.session_state.pop(accuracy_key, None)
+
+        st.caption("These are your current position. Edit them if the hazard is elsewhere.")
+        if accuracy is not None:
+            st.info(f"Accuracy about {accuracy:.0f} m")
+            if accuracy > 100:
+                st.warning("Low accuracy: check the coordinates or edit them.")
+
         location_description = st.text_input(
             "Location description *",
             max_chars=config.MAX_LOCATION_DESCRIPTION_LENGTH,
@@ -210,6 +250,7 @@ def main() -> None:
                     longitude=longitude,
                 )
                 st.session_state.last_submitted_report_id = report_id
+                st.session_state.pop(f"location_accuracy_{form_version}", None)
                 st.session_state.report_form_version += 1
                 st.rerun()
             except Exception:
